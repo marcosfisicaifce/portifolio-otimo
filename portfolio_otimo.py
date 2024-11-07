@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
-from streamlit_option_menu import option_menu
 
 def main():
     st.set_page_config(page_title="Portfólio Ótimo - Otimização de Investimentos", layout="wide")
@@ -76,7 +75,7 @@ def main():
 
     ## Como Começar
 
-    Utilize o campo abaixo para pesquisar e adicionar ações ao seu portfólio. À medida que você digita, sugestões de ações aparecerão. Clique na ação desejada para adicioná-la à sua carteira.
+    Utilize o campo abaixo para pesquisar e adicionar ações ao seu portfólio. Você pode selecionar múltiplas ações usando o campo de seleção com pesquisa.
 
     ---
     """)
@@ -88,46 +87,24 @@ def main():
         return df_acoes
 
     df_acoes = carregar_lista_acoes()
+    df_acoes['display'] = df_acoes['nome'] + ' (' + df_acoes['ticker'] + ')'
 
     st.sidebar.header("Seleção de Portfólio")
-    st.sidebar.write("Pesquise e adicione as ações ao seu portfólio:")
+    st.sidebar.write("Pesquise e selecione as ações para o seu portfólio:")
 
-    # Inicializar a lista de ações selecionadas
-    if 'acoes_selecionadas' not in st.session_state:
-        st.session_state.acoes_selecionadas = []
+    # Campo de seleção múltipla com pesquisa
+    selected_options = st.sidebar.multiselect(
+        "Selecione as ações:",
+        options=df_acoes['display'].tolist()
+    )
 
-    # Campo de entrada com autocomplete
-    search_term = st.sidebar.text_input("Digite o nome da empresa ou ticker:", "")
-
-    if search_term:
-        resultados = df_acoes[df_acoes['nome'].str.contains(search_term, case=False) | df_acoes['ticker'].str.contains(search_term, case=False)]
-        resultados = resultados[['nome', 'ticker']].values.tolist()
-        for nome, ticker in resultados:
-            display_text = f"{nome} ({ticker})"
-            if st.sidebar.button(display_text, key=f"add_{ticker}"):
-                if ticker not in st.session_state.acoes_selecionadas:
-                    st.session_state.acoes_selecionadas.append(ticker)
-    else:
-        resultados = []
-
-    # Mostrar as ações selecionadas
-    st.sidebar.write("Ações selecionadas:")
-    if st.session_state.acoes_selecionadas:
-        for ticker in st.session_state.acoes_selecionadas:
-            nome_empresa = df_acoes.loc[df_acoes['ticker'] == ticker, 'nome'].values[0]
-            display_text = f"{nome_empresa} ({ticker})"
-            if st.sidebar.button(f"Remover {display_text}", key=f"remove_{ticker}"):
-                st.session_state.acoes_selecionadas.remove(ticker)
-                st.experimental_rerun()
-    else:
-        st.sidebar.write("Nenhuma ação selecionada.")
+    # Obter tickers das opções selecionadas
+    tickers = [option.split('(')[-1].strip(')') for option in selected_options]
 
     amount = st.sidebar.number_input("Valor Total do Investimento (R$):", min_value=0.0, value=10000.0, step=1000.0)
 
     if st.sidebar.button("Otimizar Portfólio"):
-        if st.session_state.acoes_selecionadas:
-            tickers = st.session_state.acoes_selecionadas
-
+        if tickers:
             try:
                 data = yf.download(tickers, period='1y')['Adj Close']
             except Exception as e:
