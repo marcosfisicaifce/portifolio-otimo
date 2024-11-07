@@ -172,19 +172,46 @@ def main():
             nomes_selecionados.append(nome_empresa)
 
         allocation['Empresa'] = nomes_selecionados
-        allocation['Valor Investido (R$)'] = allocation['Peso'] * amount
-        st.table(allocation[['Ticker', 'Empresa', 'Peso', 'Valor Investido (R$)']])
 
-        st.subheader("Retorno Esperado Anual e Risco")
-        st.write(f"Retorno Anual Esperado: **{max_sharpe_return:.2f}%**")
-        st.write(f"Volatilidade Anual (Risco): **{max_sharpe_std_dev:.2f}%**")
-        st.write(f"Índice de Sharpe: **{results[2, max_sharpe_idx]:.2f}**")
+        # Obter preços atuais das ações
+        current_prices = yf.download(tickers, period='1d')['Adj Close'].iloc[0]
+        allocation['Preço Atual (R$)'] = allocation['Ticker'].apply(lambda x: current_prices[x])
+
+        # Calcular valor inicial alocado a cada ação
+        allocation['Valor Alocado Inicial (R$)'] = allocation['Peso'] * amount
+
+        # Calcular quantidade inteira de ações que pode ser comprada
+        allocation['Quantidade de Ações'] = (allocation['Valor Alocado Inicial (R$)'] / allocation['Preço Atual (R$)']).astype(int)
+
+        # Recalcular o valor investido com base na quantidade inteira de ações
+        allocation['Valor Investido (R$)'] = allocation['Quantidade de Ações'] * allocation['Preço Atual (R$)']
+
+        # Calcular o peso real após ajuste
+        total_invested = allocation['Valor Investido (R$)'].sum()
+        allocation['Peso Ajustado'] = allocation['Valor Investido (R$)'] / total_invested
+
+        # Reordenar colunas para exibição
+        allocation = allocation[['Ticker', 'Empresa', 'Quantidade de Ações', 'Preço Atual (R$)', 'Valor Investido (R$)', 'Peso Ajustado']]
+
+        st.table(allocation)
+
+        st.subheader("Retorno Esperado Anual e Risco (Ajustados)")
+        # Recalcular o retorno e risco com os pesos ajustados
+        adjusted_weights = allocation['Peso Ajustado'].values
+
+        adjusted_return = np.sum(mean_returns * adjusted_weights) * 252 * 100  # Converter para porcentagem
+        adjusted_std_dev = np.sqrt(np.dot(adjusted_weights.T, np.dot(cov_matrix * 252, adjusted_weights))) * 100  # Converter para porcentagem
+        adjusted_sharpe_ratio = adjusted_return / adjusted_std_dev
+
+        st.write(f"Retorno Anual Esperado Ajustado: **{adjusted_return:.2f}%**")
+        st.write(f"Volatilidade Anual (Risco) Ajustada: **{adjusted_std_dev:.2f}%**")
+        st.write(f"Índice de Sharpe Ajustado: **{adjusted_sharpe_ratio:.2f}**")
 
         # Plotar a Fronteira Eficiente
         st.subheader("Fronteira Eficiente")
         plt.figure(figsize=(10,6))
         plt.scatter(results[1,:], results[0,:], c=results[2,:], cmap='viridis', marker='o', s=10, alpha=0.3)
-        plt.scatter(max_sharpe_std_dev, max_sharpe_return, c='red', marker='*', s=500)
+        plt.scatter(adjusted_std_dev, adjusted_return, c='red', marker='*', s=500)
         plt.colorbar(label='Índice de Sharpe')
         plt.xlabel('Volatilidade (Desvio Padrão)')
         plt.ylabel('Retorno Esperado')
@@ -194,7 +221,7 @@ def main():
         st.markdown("""
         ## Interpretação
 
-        - **Portfólio Ótimo**: A estrela vermelha no gráfico representa o portfólio com o maior Índice de Sharpe.
+        - **Portfólio Ótimo Ajustado**: A estrela vermelha no gráfico representa o portfólio ajustado com o maior Índice de Sharpe considerando a compra de quantidades inteiras de ações.
         - **Fronteira Eficiente**: O gráfico de dispersão mostra todos os portfólios simulados. Portfólios na fronteira superior esquerda são mais eficientes.
         - **Risco vs. Retorno**: Os investidores podem usar essas informações para selecionar um portfólio que corresponda à sua tolerância ao risco.
 
