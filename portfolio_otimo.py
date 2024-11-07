@@ -104,7 +104,7 @@ def main():
         resultados = resultados[['nome', 'ticker']].values.tolist()
         for nome, ticker in resultados:
             display_text = f"{nome} ({ticker})"
-            if st.sidebar.button(display_text):
+            if st.sidebar.button(display_text, key=f"add_{ticker}"):
                 if ticker not in st.session_state.acoes_selecionadas:
                     st.session_state.acoes_selecionadas.append(ticker)
     else:
@@ -116,7 +116,7 @@ def main():
         for ticker in st.session_state.acoes_selecionadas:
             nome_empresa = df_acoes.loc[df_acoes['ticker'] == ticker, 'nome'].values[0]
             display_text = f"{nome_empresa} ({ticker})"
-            if st.sidebar.button(f"Remover {display_text}"):
+            if st.sidebar.button(f"Remover {display_text}", key=f"remove_{ticker}"):
                 st.session_state.acoes_selecionadas.remove(ticker)
                 st.experimental_rerun()
     else:
@@ -124,116 +124,127 @@ def main():
 
     amount = st.sidebar.number_input("Valor Total do Investimento (R$):", min_value=0.0, value=10000.0, step=1000.0)
 
-    if st.sidebar.button("Otimizar Portfólio") and st.session_state.acoes_selecionadas:
-        tickers = st.session_state.acoes_selecionadas
+    if st.sidebar.button("Otimizar Portfólio"):
+        if st.session_state.acoes_selecionadas:
+            tickers = st.session_state.acoes_selecionadas
 
-        data = yf.download(tickers, period='1y')['Adj Close']
+            try:
+                data = yf.download(tickers, period='1y')['Adj Close']
+            except Exception as e:
+                st.error(f"Erro ao baixar dados das ações: {e}")
+                return
 
-        if data.isnull().values.any():
-            st.error("Não foi possível recuperar dados de algumas ações. Verifique os códigos dos tickers e tente novamente.")
-            return
+            if data.isnull().values.any():
+                missing_tickers = data.columns[data.isnull().any()].tolist()
+                st.error(f"Não foi possível recuperar dados das seguintes ações: {', '.join(missing_tickers)}. Verifique os códigos e tente novamente.")
+                return
 
-        # Calcular retornos diários
-        returns = data.pct_change().dropna()
+            # Calcular retornos diários
+            returns = data.pct_change().dropna()
 
-        # Calcular retornos esperados e matriz de covariância
-        mean_returns = returns.mean()
-        cov_matrix = returns.cov()
+            # Calcular retornos esperados e matriz de covariância
+            mean_returns = returns.mean()
+            cov_matrix = returns.cov()
 
-        num_portfolios = 50000
-        results = np.zeros((3, num_portfolios))
-        weight_array = []
+            num_portfolios = 50000
+            results = np.zeros((3, num_portfolios))
+            weight_array = []
 
-        for i in range(num_portfolios):
-            weights = np.random.dirichlet(np.ones(len(tickers)), size=1)
-            weights = weights.flatten()
-            weight_array.append(weights)
+            for i in range(num_portfolios):
+                weights = np.random.dirichlet(np.ones(len(tickers)), size=1)
+                weights = weights.flatten()
+                weight_array.append(weights)
 
-            portfolio_return = np.sum(mean_returns * weights) * 252
-            portfolio_std_dev = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
-            sharpe_ratio = portfolio_return / portfolio_std_dev
+                portfolio_return = np.sum(mean_returns * weights) * 252
+                portfolio_std_dev = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
+                sharpe_ratio = portfolio_return / portfolio_std_dev
 
-            results[0,i] = portfolio_return * 100  # Converter para porcentagem
-            results[1,i] = portfolio_std_dev * 100  # Converter para porcentagem
-            results[2,i] = sharpe_ratio
+                results[0,i] = portfolio_return * 100  # Converter para porcentagem
+                results[1,i] = portfolio_std_dev * 100  # Converter para porcentagem
+                results[2,i] = sharpe_ratio
 
-        max_sharpe_idx = np.argmax(results[2])
-        max_sharpe_return = results[0, max_sharpe_idx]
-        max_sharpe_std_dev = results[1, max_sharpe_idx]
-        optimal_weights = weight_array[max_sharpe_idx]
+            max_sharpe_idx = np.argmax(results[2])
+            max_sharpe_return = results[0, max_sharpe_idx]
+            max_sharpe_std_dev = results[1, max_sharpe_idx]
+            optimal_weights = weight_array[max_sharpe_idx]
 
-        st.subheader("Alocação Otimizada do Portfólio")
-        allocation = pd.DataFrame({'Ticker': tickers, 'Peso': optimal_weights})
+            st.subheader("Alocação Otimizada do Portfólio")
+            allocation = pd.DataFrame({'Ticker': tickers, 'Peso': optimal_weights})
 
-        # Obter nomes das empresas para exibição
-        nomes_selecionados = []
-        for ticker in tickers:
-            nome_empresa = df_acoes.loc[df_acoes['ticker'] == ticker, 'nome'].values[0]
-            nomes_selecionados.append(nome_empresa)
+            # Obter nomes das empresas para exibição
+            nomes_selecionados = []
+            for ticker in tickers:
+                nome_empresa = df_acoes.loc[df_acoes['ticker'] == ticker, 'nome'].values[0]
+                nomes_selecionados.append(nome_empresa)
 
-        allocation['Empresa'] = nomes_selecionados
+            allocation['Empresa'] = nomes_selecionados
 
-        # Obter preços atuais das ações
-        current_prices = yf.download(tickers, period='1d')['Adj Close'].iloc[0]
-        allocation['Preço Atual (R$)'] = allocation['Ticker'].apply(lambda x: current_prices[x])
+            # Obter preços atuais das ações
+            try:
+                current_prices = yf.download(tickers, period='1d')['Adj Close'].iloc[0]
+            except Exception as e:
+                st.error(f"Erro ao obter preços atuais das ações: {e}")
+                return
 
-        # Calcular valor inicial alocado a cada ação
-        allocation['Valor Alocado Inicial (R$)'] = allocation['Peso'] * amount
+            allocation['Preço Atual (R$)'] = allocation['Ticker'].apply(lambda x: current_prices[x])
 
-        # Calcular quantidade inteira de ações que pode ser comprada
-        allocation['Quantidade de Ações'] = (allocation['Valor Alocado Inicial (R$)'] / allocation['Preço Atual (R$)']).astype(int)
+            # Calcular valor inicial alocado a cada ação
+            allocation['Valor Alocado Inicial (R$)'] = allocation['Peso'] * amount
 
-        # Recalcular o valor investido com base na quantidade inteira de ações
-        allocation['Valor Investido (R$)'] = allocation['Quantidade de Ações'] * allocation['Preço Atual (R$)']
+            # Calcular quantidade inteira de ações que pode ser comprada
+            allocation['Quantidade de Ações'] = (allocation['Valor Alocado Inicial (R$)'] / allocation['Preço Atual (R$)']).astype(int)
 
-        # Calcular o peso real após ajuste
-        total_invested = allocation['Valor Investido (R$)'].sum()
-        allocation['Peso Ajustado'] = allocation['Valor Investido (R$)'] / total_invested
+            # Recalcular o valor investido com base na quantidade inteira de ações
+            allocation['Valor Investido (R$)'] = allocation['Quantidade de Ações'] * allocation['Preço Atual (R$)']
 
-        # Reordenar colunas para exibição
-        allocation = allocation[['Ticker', 'Empresa', 'Quantidade de Ações', 'Preço Atual (R$)', 'Valor Investido (R$)', 'Peso Ajustado']]
+            # Calcular o peso real após ajuste
+            total_invested = allocation['Valor Investido (R$)'].sum()
+            allocation['Peso Ajustado'] = allocation['Valor Investido (R$)'] / total_invested
 
-        st.table(allocation)
+            # Reordenar colunas para exibição
+            allocation = allocation[['Ticker', 'Empresa', 'Quantidade de Ações', 'Preço Atual (R$)', 'Valor Investido (R$)', 'Peso Ajustado']]
 
-        st.subheader("Retorno Esperado Anual e Risco (Ajustados)")
-        # Recalcular o retorno e risco com os pesos ajustados
-        adjusted_weights = allocation['Peso Ajustado'].values
+            st.table(allocation)
 
-        adjusted_return = np.sum(mean_returns * adjusted_weights) * 252 * 100  # Converter para porcentagem
-        adjusted_std_dev = np.sqrt(np.dot(adjusted_weights.T, np.dot(cov_matrix * 252, adjusted_weights))) * 100  # Converter para porcentagem
-        adjusted_sharpe_ratio = adjusted_return / adjusted_std_dev
+            st.subheader("Retorno Esperado Anual e Risco (Ajustados)")
+            # Recalcular o retorno e risco com os pesos ajustados
+            adjusted_weights = allocation['Peso Ajustado'].values
 
-        st.write(f"Retorno Anual Esperado Ajustado: **{adjusted_return:.2f}%**")
-        st.write(f"Volatilidade Anual (Risco) Ajustada: **{adjusted_std_dev:.2f}%**")
-        st.write(f"Índice de Sharpe Ajustado: **{adjusted_sharpe_ratio:.2f}**")
+            adjusted_return = np.sum(mean_returns * adjusted_weights) * 252 * 100  # Converter para porcentagem
+            adjusted_std_dev = np.sqrt(np.dot(adjusted_weights.T, np.dot(cov_matrix * 252, adjusted_weights))) * 100  # Converter para porcentagem
+            adjusted_sharpe_ratio = adjusted_return / adjusted_std_dev
 
-        # Plotar a Fronteira Eficiente
-        st.subheader("Fronteira Eficiente")
-        plt.figure(figsize=(10,6))
-        plt.scatter(results[1,:], results[0,:], c=results[2,:], cmap='viridis', marker='o', s=10, alpha=0.3)
-        plt.scatter(adjusted_std_dev, adjusted_return, c='red', marker='*', s=500)
-        plt.colorbar(label='Índice de Sharpe')
-        plt.xlabel('Volatilidade (Desvio Padrão)')
-        plt.ylabel('Retorno Esperado')
-        plt.title('Fronteira Eficiente')
-        st.pyplot(plt)
+            st.write(f"Retorno Anual Esperado Ajustado: **{adjusted_return:.2f}%**")
+            st.write(f"Volatilidade Anual (Risco) Ajustada: **{adjusted_std_dev:.2f}%**")
+            st.write(f"Índice de Sharpe Ajustado: **{adjusted_sharpe_ratio:.2f}**")
 
-        st.markdown("""
-        ## Interpretação
+            # Plotar a Fronteira Eficiente
+            st.subheader("Fronteira Eficiente")
+            plt.figure(figsize=(10,6))
+            plt.scatter(results[1,:], results[0,:], c=results[2,:], cmap='viridis', marker='o', s=10, alpha=0.3)
+            plt.scatter(adjusted_std_dev, adjusted_return, c='red', marker='*', s=500)
+            plt.colorbar(label='Índice de Sharpe')
+            plt.xlabel('Volatilidade (Desvio Padrão)')
+            plt.ylabel('Retorno Esperado')
+            plt.title('Fronteira Eficiente')
+            st.pyplot(plt)
 
-        - **Portfólio Ótimo Ajustado**: A estrela vermelha no gráfico representa o portfólio ajustado com o maior Índice de Sharpe considerando a compra de quantidades inteiras de ações.
-        - **Fronteira Eficiente**: O gráfico de dispersão mostra todos os portfólios simulados. Portfólios na fronteira superior esquerda são mais eficientes.
-        - **Risco vs. Retorno**: Os investidores podem usar essas informações para selecionar um portfólio que corresponda à sua tolerância ao risco.
+            st.markdown("""
+            ## Interpretação
 
-        ## Próximos Passos
+            - **Portfólio Ótimo Ajustado**: A estrela vermelha no gráfico representa o portfólio ajustado com o maior Índice de Sharpe considerando a compra de quantidades inteiras de ações.
+            - **Fronteira Eficiente**: O gráfico de dispersão mostra todos os portfólios simulados. Portfólios na fronteira superior esquerda são mais eficientes.
+            - **Risco vs. Retorno**: Os investidores podem usar essas informações para selecionar um portfólio que corresponda à sua tolerância ao risco.
 
-        - **Ajuste Seu Portfólio**: Tente adicionar ou remover ações para ver como isso afeta a alocação ótima.
-        - **Análise Adicional**: Considere outros fatores como condições de mercado, análise individual de ações e seus objetivos de investimento.
+            ## Próximos Passos
 
-        **Aviso**: Esta ferramenta fornece uma alocação teórica otimizada com base em dados históricos. Desempenhos passados não são indicativos de resultados futuros. Sempre conduza pesquisas aprofundadas ou consulte um consultor financeiro antes de tomar decisões de investimento.
-        """)
-    elif st.sidebar.button("Otimizar Portfólio") and not st.session_state.acoes_selecionadas:
-        st.error("Por favor, selecione pelo menos uma ação para otimizar o portfólio.")
+            - **Ajuste Seu Portfólio**: Tente adicionar ou remover ações para ver como isso afeta a alocação ótima.
+            - **Análise Adicional**: Considere outros fatores como condições de mercado, análise individual de ações e seus objetivos de investimento.
+
+            **Aviso**: Esta ferramenta fornece uma alocação teórica otimizada com base em dados históricos. Desempenhos passados não são indicativos de resultados futuros. Sempre conduza pesquisas aprofundadas ou consulte um consultor financeiro antes de tomar decisões de investimento.
+            """)
+        else:
+            st.error("Por favor, selecione pelo menos uma ação para otimizar o portfólio.")
 
 if __name__ == "__main__":
     main()
