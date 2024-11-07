@@ -1,0 +1,412 @@
+ticker,nome
+B3SA3.SA,B3
+AZUL4.SA,Azul
+CVCB3.SA,CVC
+HAPV3.SA,Hapvida
+PETR4.SA,Petrobras
+COGN3.SA,Cogna
+BBDC4.SA,Banco Bradesco
+ITSA4.SA,Itaúsa
+ASAI3.SA,Assaí
+ABEV3.SA,Ambev
+CMIN3.SA,CSN Mineração
+ITUB4.SA,Itaú Unibanco
+LREN3.SA,Lojas Renner
+MGLU3.SA,Magazine Luiza
+CRFB3.SA,Carrefour Brasil
+RAIL3.SA,Rumo
+USIM5.SA,Usiminas
+VALE3.SA,Vale
+RAIZ4.SA,Raízen
+MRVE3.SA,MRV
+GGBR4.SA,Gerdau
+RDOR3.SA,Rede D'Or
+ANIM3.SA,Ânima Educação
+RENT3.SA,Localiza
+VAMO3.SA,Grupo Vamos
+BRFS3.SA,BRF
+POMO4.SA,Marcopolo
+CSNA3.SA,Siderúrgica Nacional
+ENEV3.SA,Eneva
+JBSS3.SA,JBS
+IFCM3.SA,Infracommerce
+BBAS3.SA,Banco do Brasil
+EQTL3.SA,Equatorial Energia
+CPLE6.SA,Copel
+GOLL4.SA,GOL
+VBBR3.SA,Vibra Energia
+CSAN3.SA,Cosan
+BEEF3.SA,Minerva
+PRIO3.SA,PetroRio
+NTCO3.SA,Natura
+EMBR3.SA,Embraer
+MULT3.SA,Multiplan
+PETR3.SA,Petrobras
+MOVI3.SA,Movida
+ELET3.SA,Eletrobras
+PCAR3.SA,Grupo Pão de Açúcar
+ONCO3.SA,Oncoclínicas
+GOAU4.SA,Metalúrgica Gerdau
+JFEN3.SA,João Fortes
+PETZ3.SA,Petz
+BRKM5.SA,Braskem
+BPAC11.SA,Banco BTG Pactual
+HYPE3.SA,Hypera
+RADL3.SA,RaiaDrogasil
+YDUQ3.SA,YDUQS
+SRNA3.SA,Serena Energia
+GMAT3.SA,Grupo Mateus
+CMIG4.SA,CEMIG
+CSMG3.SA,COPASA
+UGPA3.SA,Ultrapar
+GFSA3.SA,Gafisa
+CPLE3.SA,Copel
+CYRE3.SA,Cyrela
+AMER3.SA,Americanas
+CCRO3.SA,Grupo CCR
+SBSP3.SA,Sabesp
+ALOS3.SA,Allos
+MRFG3.SA,Marfrig
+TIMS3.SA,TIM
+BBDC3.SA,Banco Bradesco
+RAPT4.SA,Randon
+SIMH3.SA,Simpar
+LWSA3.SA,Locaweb
+AURE3.SA,Auren Energia
+DXCO3.SA,Dexco
+BRAV3.SA,3R Petroleum
+QUAL3.SA,Qualicorp
+TOTS3.SA,Totvs
+STBP3.SA,Santos Brasil
+KLBN11.SA,Klabin
+VVEO3.SA,Viveo
+JHSF3.SA,JHSF
+EZTC3.SA,EZTEC
+TEND3.SA,Construtora Tenda
+WEGE3.SA,WEG
+BRAP4.SA,Bradespar
+SMFT3.SA,Smart Fit
+BHIA3.SA,Casas Bahia
+DIRR3.SA,Direcional
+ECOR3.SA,EcoRodovias
+CXSE3.SA,Caixa Seguridade
+SUZB3.SA,Suzano
+CBAV3.SA,CBA
+AESB3.SA,AES Brasil
+CEAB3.SA,C&A
+CURY3.SA,Cury
+AZZA3.SA,Arezzo
+CASH3.SA,Méliuz
+RECV3.SA,PetroRecôncavo
+BBSE3.SA,BB Seguridade
+ALPA4.SA,Alpargatas
+AZEV4.SA,Azevedo & Travassos
+VIVA3.SA,Vivara
+IGTI11.SA,Jereissati Participações
+IGTI11.SA,Iguatemi
+PSSA3.SA,Porto Seguro
+SAPR11.SA,Sanepar
+VIVT3.SA,Vivo
+SLCE3.SA,SLC Agrícola
+TRPL4.SA,Transmissão Paulista
+ENGI11.SA,Energisa
+CLSA3.SA,ClearSale
+SBFG3.SA,Grupo SBF
+SMTO3.SA,São Martinho
+LJQQ3.SA,Lojas Quero-Quero
+CPFE3.SA,CPFL Energia
+BRSR6.SA,Banrisul
+SAPR4.SA,Sanepar
+GGPS3.SA,GPS
+POSI3.SA,Positivo
+FLRY3.SA,Fleury
+MELK3.SA,Melnick
+FRAS3.SA,Fras-le
+RCSL3.SA,Recrusul
+MLAS3.SA,Multilaser
+SANB11.SA,Banco Santander
+BPAN4.SA,Banco Pan
+TAEE11.SA,Taesa
+TTEN3.SA,3tentos
+LPSB3.SA,Lopes
+OIBR3.SA,Oi
+ELET6.SA,Eletrobras
+PORT3.SA,Wilson Sons
+FIQE3.SA,Unifique
+IRBR3.SA,IRB Brasil RE
+LIGT3.SA,Light
+JSLG3.SA,JSL
+VLID3.SA,Valid
+MILS3.SA,Mills
+ITUB3.SA,Itaú Unibanco
+INTB3.SA,Intelbras
+EGIE3.SA,Engie
+SEER3.SA,Ser Educacional
+KLBN4.SA,Klabin
+TRAD3.SA,Traders Club
+GUAR3.SA,Guararapes
+MTRE3.SA,Mitre Realty
+HBSA3.SA,Hidrovias do Brasil
+RANI3.SA,Irani
+MDIA3.SA,M. Dias Branco
+DASA3.SA,Dasa
+MYPK3.SA,Iochpe-Maxion
+ORVR3.SA,Orizon
+HBOR3.SA,Helbor
+AZEV3.SA,Azevedo & Travassos
+GRND3.SA,Grendene
+CSED3.SA,Cruzeiro do Sul Educacional
+TRIS3.SA,Trisul
+KEPL3.SA,Kepler Weber
+PDGR3.SA,PDG Realty
+EVEN3.SA,Even
+LAVV3.SA,Lavvi Incorporadora
+BMGB4.SA,Banco BMG
+MEAL3.SA,IMC Alimentação
+ODPV3.SA,Odontoprev
+NGRD3.SA,Neogrid
+ABCB4.SA,Banco ABC Brasil
+SEQL3.SA,Sequoia Logística
+SYNE3.SA,SYN
+ALUP11.SA,Alupar
+ENJU3.SA,Enjoei
+KRSA3.SA,Kora Saúde
+PGMN3.SA,Pague Menos
+ARML3.SA,Armac
+AMBP3.SA,Ambipar
+OPCT3.SA,OceanPact
+AMAR3.SA,Lojas Marisa
+NEOE3.SA,Neoenergia
+MBLY3.SA,Mobly
+VULC3.SA,Vulcabras
+PLPL3.SA,Plano&Plano
+BRIT3.SA,Brisanet
+RCSL4.SA,Recrusul
+LEVE3.SA,Mahle Metal Leve
+SHOW3.SA,Time For Fun
+BRBI11.SA,BR Partners
+SOJA3.SA,Boa Safra Sementes
+PNVL3.SA,Dimed
+PTBL3.SA,Portobello
+MDNE3.SA,Moura Dubeux
+ZAMP3.SA,Zamp
+FESA4.SA,Ferbasa
+POMO3.SA,Marcopolo
+USIM3.SA,Usiminas
+TUPY3.SA,Tupy
+HBRE3.SA,HBR Realty
+UNIP6.SA,Unipar
+TFCO4.SA,Track & Field
+RAPT3.SA,Randon
+WIZC3.SA,Wiz Soluções
+CAML3.SA,Camil Alimentos
+JALL3.SA,Jalles Machado
+LAND3.SA,Terra Santa
+BLAU3.SA,Blau Farmacêutica
+AERI3.SA,Aeris Energy
+ALPK3.SA,Estapar
+SHUL4.SA,Schulz
+RNEW4.SA,Renova Energia
+TASA4.SA,Taurus
+LOGG3.SA,LOG CP
+AGRO3.SA,BrasilAgro
+MATD3.SA,Mater Dei
+SAPR3.SA,Sanepar
+VTRU3.SA,VITRUBREPCOM
+ETER3.SA,Eternit
+PRNR3.SA,Priner
+RNEW3.SA,Renova Energia
+DESK3.SA,Desktop
+KLBN3.SA,Klabin
+TAEE4.SA,Taesa
+TECN3.SA,Technos
+TPIS3.SA,Triunfo
+ROMI3.SA,Indústrias ROMI
+IGTI3.SA,Iguatemi
+IGTI3.SA,Jereissati Participações
+LUPA3.SA,Lupatech
+VITT3.SA,Vittia
+ITSA3.SA,Itaúsa
+CMIG3.SA,CEMIG
+BMOB3.SA,Bemobi
+TGMA3.SA,Tegma
+DEXP3.SA,Dexxos
+PFRM3.SA,Profarma
+AGXY3.SA,AgroGalaxy
+INEP3.SA,Inepar
+ALLD3.SA,Allied
+WHRL3.SA,Whirlpool
+RPMG3.SA,Refinaria de Manguinhos
+BRAP3.SA,Bradespar
+WHRL4.SA,Whirlpool
+ELMD3.SA,Eletromidia
+BIOM3.SA,Biomm
+TCSA3.SA,Tecnisa
+PINE4.SA,Banco Pine
+ESPA3.SA,Espaçolaser
+ESTR4.SA,Estrela
+DMVF3.SA,D1000 Varejo Farma
+TAEE3.SA,Taesa
+CTSA4.SA,Santanense
+VIVR3.SA,Viver
+CSUD3.SA,CSU Cardsystem
+PMAM3.SA,Paranapanema
+EUCA4.SA,Eucatex
+SANB4.SA,Banco Santander
+WEST3.SA,Westwing
+LVTC3.SA,WDC Networks
+DOTZ3.SA,Dotz
+GGBR3.SA,Gerdau
+BRKM3.SA,Braskem
+SANB3.SA,Banco Santander
+BOBR4.SA,Bombril
+GOAU3.SA,Metalúrgica Gerdau
+INEP4.SA,Inepar
+ATMP3.SA,Atma
+HAGA4.SA,Haga
+PDTC3.SA,Padtec
+AMAR11.SA,Lojas Marisa
+LOGN3.SA,Log-In
+COCE5.SA,Coelce
+UCAS3.SA,Unicasa
+BMEB4.SA,Banco Mercantil do Brasil
+EPAR3.SA,Embpar Participações
+CAMB3.SA,Cambuci
+TASA3.SA,Taurus
+BRSR3.SA,Banrisul
+AALR3.SA,Alliança
+SNSY5.SA,Sansuy
+CEBR3.SA,CEB
+BEES3.SA,Banestes
+RSID3.SA,Rossi Residencial
+VSTE3.SA,LE LIS BLANC
+ENGI4.SA,Energisa
+EALT4.SA,Electro Aço Altona
+ALUP4.SA,Alupar
+UNIP3.SA,Unipar
+OSXB3.SA,OSX Brasil
+CEBR6.SA,CEB
+BPAC3.SA,Banco BTG Pactual
+RNEW11.SA,Renova Energia
+CGRA4.SA,Grazziotin
+CRPG6.SA,Tronox Pigmentos
+BAZA3.SA,Banco da Amazônia
+PTNT4.SA,Pettenati
+ALPA3.SA,Alpargatas
+AVLL3.SA,Alphaville
+ENGI3.SA,Energisa
+CLSC4.SA,Celesc
+EMAE4.SA,EMAE
+TRPL3.SA,Transmissão Paulista
+RSUL4.SA,Metalúrgica Riosulense
+EQPA3.SA,Equatorial Energia Pará
+DEXP4.SA,Dexxos
+MNDL3.SA,Mundial
+OFSA3.SA,Ourofino Saúde Animal
+MWET4.SA,Wetzel
+BPAC5.SA,Banco BTG Pactual
+NUTR3.SA,Nutriplant
+OIBR4.SA,Oi
+BEES4.SA,Banestes
+RDNI3.SA,RNI
+SCAR3.SA,São Carlos
+AZEV11.SA,Azevedo & Travassos
+BSLI3.SA,Banco de Brasília
+CTSA3.SA,Santanense
+HOOT4.SA,Hotéis Othon
+ALUP3.SA,Alupar
+CEBR5.SA,CEB
+BAHI3.SA,Bahema
+NEXP3.SA,Brasil Brokers
+BGIP4.SA,Banese
+EQMA3B.SA,Equatorial Maranhão
+TELB3.SA,Telebras
+PINE3.SA,Banco Pine
+EALT3.SA,Electro Aço Altona
+TELB4.SA,Telebras
+HETA4.SA,Hercules
+CGAS5.SA,Comgás
+MRSA3B.SA,MRS Logística
+CRPG5.SA,Tronox Pigmentos
+MNPR3.SA,Minupar
+BIOM11.SA,Biomm
+MTSA4.SA,Metisa
+WLMM4.SA,WLM
+MGEL4.SA,Mangels
+BMKS3.SA,Monark
+PEAB4.SA,Participações Aliança da Bahia
+UNIP5.SA,Unipar
+EKTR4.SA,Elektro
+GEPA4.SA,Rio Paranapanema Energia
+BSLI4.SA,Banco de Brasília
+REDE3.SA,Rede Energia
+ELET5.SA,Eletrobras
+BMEB3.SA,Banco Mercantil do Brasil
+GEPA3.SA,Rio Paranapanema Energia
+CTKA4.SA,Karsten
+BRKM6.SA,Braskem
+IGTI4.SA,Jereissati Participações
+IGTI4.SA,Iguatemi
+NINJ3.SA,GetNinjas
+DOHL4.SA,Döhler
+HAGA3.SA,Haga
+FRIO3.SA,Metalfrio
+HBTS5.SA,Habitasul
+AHEB3.SA,São Paulo Turismo
+CGRA3.SA,Grazziotin
+EUCA3.SA,Eucatex
+PTNT3.SA,Pettenati
+RPAD6.SA,Alfa Holdings
+FHER3.SA,Fertilizantes Heringer
+ATOM3.SA,ATOM
+PPLA11.SA,PPLA
+PATI3.SA,Panatlântica
+CBEE3.SA,Ampla Energia
+NORD3.SA,Nordon
+JOPA3.SA,Josapar
+SNSY3.SA,Sansuy
+BAUH4.SA,Excelsior
+PEAB3.SA,Participações Aliança da Bahia
+AHEB5.SA,São Paulo Turismo
+LUXM4.SA,Trevisa
+CPLE5.SA,Copel
+TEKA4.SA,Teka
+CEDO4.SA,Cedro Têxtil
+BMIN4.SA,Banco Mercantil de Investimentos
+PLAS3.SA,Plascar
+PINE11.SA,Banco Pine
+GSHP3.SA,General Shopping & Outlets
+PSVM11.SA,PORTO VM
+MRSA6B.SA,MRS Logística
+ENMT4.SA,Energisa MT
+SOND5.SA,Sondotécnica
+CEDO3.SA,Cedro Têxtil
+BMIN3.SA,Banco Mercantil de Investimentos
+FESA3.SA,Ferbasa
+BALM3.SA,Baumer
+FIEI3.SA,Fica
+MAPT4.SA,Cemepe
+RPAD5.SA,Alfa Holdings
+CEEB3.SA,COELBA
+BALM4.SA,Baumer
+CLSC3.SA,Celesc
+PATI4.SA,Panatlântica
+BGIP3.SA,Banese
+USIM6.SA,Usiminas
+BDLL4.SA,Bardella
+BDLL3.SA,Bardella
+MERC4.SA,Mercantil do Brasil Financeira
+CGAS3.SA,Comgás
+MAPT3.SA,Cemepe
+WLMM3.SA,WLM
+RRRP3.SA,RRRP3
+MRSA5B.SA,MRS Logística
+DTCY3.SA,Dtcom
+AFLT3.SA,Afluente T
+CEED3.SA,CEEE D
+COCE3.SA,Coelce
+BNBR3.SA,Banco do Nordeste
+APER3.SA,Alper
+BRSR5.SA,Banrisul
+CEEB5.SA,COELBA
+RPAD3.SA,Alfa Holdings
