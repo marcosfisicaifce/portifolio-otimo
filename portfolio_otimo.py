@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import yfinance as yf
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 def main():
     st.set_page_config(page_title="Portfólio Ótimo - Otimização de Investimentos", layout="wide")
@@ -124,7 +124,7 @@ def main():
             cov_matrix = returns.cov()
 
             num_portfolios = 50000
-            results = np.zeros((3, num_portfolios))
+            results = np.zeros((4 + len(tickers), num_portfolios))
             weight_array = []
 
             for i in range(num_portfolios):
@@ -139,11 +139,20 @@ def main():
                 results[0,i] = portfolio_return * 100  # Converter para porcentagem
                 results[1,i] = portfolio_std_dev * 100  # Converter para porcentagem
                 results[2,i] = sharpe_ratio
+                results[3,i] = i  # Índice do portfólio
+
+                # Armazenar pesos
+                for j in range(len(weights)):
+                    results[4 + j, i] = weights[j]
 
             max_sharpe_idx = np.argmax(results[2])
             max_sharpe_return = results[0, max_sharpe_idx]
             max_sharpe_std_dev = results[1, max_sharpe_idx]
             optimal_weights = weight_array[max_sharpe_idx]
+
+            # Criar DataFrame com os resultados
+            columns = ['Retorno', 'Risco', 'Sharpe', 'Índice'] + tickers
+            portfolios = pd.DataFrame(results.T, columns=columns)
 
             st.subheader("Alocação Otimizada do Portfólio")
             allocation = pd.DataFrame({'Ticker': tickers, 'Peso': optimal_weights})
@@ -195,22 +204,52 @@ def main():
             st.write(f"Volatilidade Anual (Risco) Ajustada: **{adjusted_std_dev:.2f}%**")
             st.write(f"Índice de Sharpe Ajustado: **{adjusted_sharpe_ratio:.2f}**")
 
-            # Plotar a Fronteira Eficiente
-            st.subheader("Fronteira Eficiente")
-            plt.figure(figsize=(10,6))
-            plt.scatter(results[1,:], results[0,:], c=results[2,:], cmap='viridis', marker='o', s=10, alpha=0.3)
-            plt.scatter(adjusted_std_dev, adjusted_return, c='red', marker='*', s=500)
-            plt.colorbar(label='Índice de Sharpe')
-            plt.xlabel('Volatilidade (Desvio Padrão)')
-            plt.ylabel('Retorno Esperado')
-            plt.title('Fronteira Eficiente')
-            st.pyplot(plt)
+            # Plotar a Fronteira Eficiente Interativa
+            st.subheader("Fronteira Eficiente Interativa")
+
+            # Dados para o gráfico
+            portfolios['Retorno'] = portfolios['Retorno']
+            portfolios['Risco'] = portfolios['Risco']
+            portfolios['Índice de Sharpe'] = portfolios['Sharpe']
+
+            # Preparar informações para hover
+            hover_data = {
+                'Retorno': ':.2f',
+                'Risco': ':.2f',
+                'Índice de Sharpe': ':.2f',
+            }
+
+            for ticker in tickers:
+                portfolios[ticker] = portfolios[ticker]
+                hover_data[ticker] = ':.2f'
+
+            # Criar gráfico interativo com Plotly
+            fig = px.scatter(
+                portfolios,
+                x='Risco',
+                y='Retorno',
+                color='Índice de Sharpe',
+                hover_data=hover_data,
+                title='Fronteira Eficiente',
+                template='plotly_white'
+            )
+
+            # Adicionar o portfólio ótimo ajustado
+            fig.add_scatter(
+                x=[adjusted_std_dev],
+                y=[adjusted_return],
+                mode='markers',
+                marker=dict(color='red', size=15, symbol='star'),
+                name='Portfólio Ótimo Ajustado'
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
 
             st.markdown("""
             ## Interpretação
 
             - **Portfólio Ótimo Ajustado**: A estrela vermelha no gráfico representa o portfólio ajustado com o maior Índice de Sharpe considerando a compra de quantidades inteiras de ações.
-            - **Fronteira Eficiente**: O gráfico de dispersão mostra todos os portfólios simulados. Portfólios na fronteira superior esquerda são mais eficientes.
+            - **Fronteira Eficiente**: O gráfico de dispersão mostra todos os portfólios simulados. Passe o mouse sobre os pontos para ver os detalhes de cada portfólio.
             - **Risco vs. Retorno**: Os investidores podem usar essas informações para selecionar um portfólio que corresponda à sua tolerância ao risco.
 
             ## Próximos Passos
