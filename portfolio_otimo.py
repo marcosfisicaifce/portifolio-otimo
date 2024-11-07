@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
+from streamlit_option_menu import option_menu
 
 def main():
     st.set_page_config(page_title="Portfólio Ótimo - Otimização de Investimentos", layout="wide")
@@ -75,7 +76,7 @@ def main():
 
     ## Como Começar
 
-    Utilize a barra lateral para pesquisar e selecionar as ações que deseja incluir em seu portfólio, e insira o valor total que deseja investir. O **Portfólio Ótimo** gerará um portfólio otimizado para você.
+    Utilize o campo abaixo para pesquisar e adicionar ações ao seu portfólio. À medida que você digita, sugestões de ações aparecerão. Clique na ação desejada para adicioná-la à sua carteira.
 
     ---
     """)
@@ -89,22 +90,43 @@ def main():
     df_acoes = carregar_lista_acoes()
 
     st.sidebar.header("Seleção de Portfólio")
-    st.sidebar.write("Pesquise e selecione as ações:")
+    st.sidebar.write("Pesquise e adicione as ações ao seu portfólio:")
 
-    # Campo de busca e seleção de ações
+    # Inicializar a lista de ações selecionadas
+    if 'acoes_selecionadas' not in st.session_state:
+        st.session_state.acoes_selecionadas = []
+
+    # Campo de entrada com autocomplete
     search_term = st.sidebar.text_input("Digite o nome da empresa ou ticker:", "")
+
     if search_term:
         resultados = df_acoes[df_acoes['nome'].str.contains(search_term, case=False) | df_acoes['ticker'].str.contains(search_term, case=False)]
-        selecao = st.sidebar.multiselect("Resultados da pesquisa:", resultados['nome'] + ' (' + resultados['ticker'] + ')')
+        resultados = resultados[['nome', 'ticker']].values.tolist()
+        for nome, ticker in resultados:
+            display_text = f"{nome} ({ticker})"
+            if st.sidebar.button(display_text):
+                if ticker not in st.session_state.acoes_selecionadas:
+                    st.session_state.acoes_selecionadas.append(ticker)
     else:
-        selecao = []
+        resultados = []
 
-    # Obter tickers selecionados
-    tickers = [s.split('(')[-1].strip(')') for s in selecao]
+    # Mostrar as ações selecionadas
+    st.sidebar.write("Ações selecionadas:")
+    if st.session_state.acoes_selecionadas:
+        for ticker in st.session_state.acoes_selecionadas:
+            nome_empresa = df_acoes.loc[df_acoes['ticker'] == ticker, 'nome'].values[0]
+            display_text = f"{nome_empresa} ({ticker})"
+            if st.sidebar.button(f"Remover {display_text}"):
+                st.session_state.acoes_selecionadas.remove(ticker)
+                st.experimental_rerun()
+    else:
+        st.sidebar.write("Nenhuma ação selecionada.")
 
     amount = st.sidebar.number_input("Valor Total do Investimento (R$):", min_value=0.0, value=10000.0, step=1000.0)
 
-    if st.sidebar.button("Otimizar Portfólio") and tickers:
+    if st.sidebar.button("Otimizar Portfólio") and st.session_state.acoes_selecionadas:
+        tickers = st.session_state.acoes_selecionadas
+
         data = yf.download(tickers, period='1y')['Adj Close']
 
         if data.isnull().values.any():
@@ -183,7 +205,7 @@ def main():
 
         **Aviso**: Esta ferramenta fornece uma alocação teórica otimizada com base em dados históricos. Desempenhos passados não são indicativos de resultados futuros. Sempre conduza pesquisas aprofundadas ou consulte um consultor financeiro antes de tomar decisões de investimento.
         """)
-    elif st.sidebar.button("Otimizar Portfólio") and not tickers:
+    elif st.sidebar.button("Otimizar Portfólio") and not st.session_state.acoes_selecionadas:
         st.error("Por favor, selecione pelo menos uma ação para otimizar o portfólio.")
 
 if __name__ == "__main__":
