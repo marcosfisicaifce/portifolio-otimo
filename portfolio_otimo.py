@@ -75,19 +75,36 @@ def main():
 
     ## Como Começar
 
-    Insira os códigos das ações (tickers) nas quais você está interessado e o valor total que deseja investir. O **Portfólio Ótimo** gerará um portfólio otimizado para você.
+    Utilize a barra lateral para pesquisar e selecionar as ações que deseja incluir em seu portfólio, e insira o valor total que deseja investir. O **Portfólio Ótimo** gerará um portfólio otimizado para você.
 
     ---
     """)
 
+    # Carregar a lista de ações
+    @st.cache_data
+    def carregar_lista_acoes():
+        df_acoes = pd.read_csv('lista_acoes.csv')
+        return df_acoes
+
+    df_acoes = carregar_lista_acoes()
+
     st.sidebar.header("Seleção de Portfólio")
-    st.sidebar.write("Insira os códigos das ações (separados por vírgula):")
-    tickers_input = st.sidebar.text_input("Tickers", "PETR4.SA, VALE3.SA, ITUB4.SA, ABEV3.SA")
+    st.sidebar.write("Pesquise e selecione as ações:")
+
+    # Campo de busca e seleção de ações
+    search_term = st.sidebar.text_input("Digite o nome da empresa ou ticker:", "")
+    if search_term:
+        resultados = df_acoes[df_acoes['nome'].str.contains(search_term, case=False) | df_acoes['ticker'].str.contains(search_term, case=False)]
+        selecao = st.sidebar.multiselect("Resultados da pesquisa:", resultados['nome'] + ' (' + resultados['ticker'] + ')')
+    else:
+        selecao = []
+
+    # Obter tickers selecionados
+    tickers = [s.split('(')[-1].strip(')') for s in selecao]
+
     amount = st.sidebar.number_input("Valor Total do Investimento (R$):", min_value=0.0, value=10000.0, step=1000.0)
 
-    tickers = [ticker.strip().upper() for ticker in tickers_input.split(",")]
-
-    if st.sidebar.button("Otimizar Portfólio"):
+    if st.sidebar.button("Otimizar Portfólio") and tickers:
         data = yf.download(tickers, period='1y')['Adj Close']
 
         if data.isnull().values.any():
@@ -125,8 +142,16 @@ def main():
 
         st.subheader("Alocação Otimizada do Portfólio")
         allocation = pd.DataFrame({'Ticker': tickers, 'Peso': optimal_weights})
+
+        # Obter nomes das empresas para exibição
+        nomes_selecionados = []
+        for ticker in tickers:
+            nome_empresa = df_acoes.loc[df_acoes['ticker'] == ticker, 'nome'].values[0]
+            nomes_selecionados.append(nome_empresa)
+
+        allocation['Empresa'] = nomes_selecionados
         allocation['Valor Investido (R$)'] = allocation['Peso'] * amount
-        st.table(allocation[['Ticker', 'Peso', 'Valor Investido (R$)']])
+        st.table(allocation[['Ticker', 'Empresa', 'Peso', 'Valor Investido (R$)']])
 
         st.subheader("Retorno Esperado Anual e Risco")
         st.write(f"Retorno Anual Esperado: **{max_sharpe_return:.2f}%**")
@@ -158,6 +183,8 @@ def main():
 
         **Aviso**: Esta ferramenta fornece uma alocação teórica otimizada com base em dados históricos. Desempenhos passados não são indicativos de resultados futuros. Sempre conduza pesquisas aprofundadas ou consulte um consultor financeiro antes de tomar decisões de investimento.
         """)
+    elif st.sidebar.button("Otimizar Portfólio") and not tickers:
+        st.error("Por favor, selecione pelo menos uma ação para otimizar o portfólio.")
 
 if __name__ == "__main__":
     main()
